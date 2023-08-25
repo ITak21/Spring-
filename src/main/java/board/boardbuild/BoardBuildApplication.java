@@ -1,0 +1,13 @@
+package board.boardbuild;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BoardBuildApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BoardBuildApplication.class, args);
+	}
+
+}
