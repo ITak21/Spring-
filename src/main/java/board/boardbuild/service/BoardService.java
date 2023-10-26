@@ -45,20 +45,26 @@ public class BoardService {
                 6. board_table에 해당 데이터 save 처리
                 7. board_file_table에 해당 데이터 save 처리
              */
-           MultipartFile boardFile = boardDTO.getBoardFile();
+           BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+           Long savedId = boardRepository.save(boardEntity).getId();
+           BoardEntity board = boardRepository.findById(savedId).get();
+           for(MultipartFile boardFile: boardDTO.getBoardFile()){
+
+
+//           MultipartFile boardFile = boardDTO.getBoardFile();
            String originalFilename =boardFile.getOriginalFilename();
            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
            String savePath = "C:/springboot_img/" + storedFileName;
            boardFile.transferTo(new File(savePath));
-           BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
-           Long savedId = boardRepository.save(boardEntity).getId();
-           BoardEntity board = boardRepository.findById(savedId).get();
+
 
             BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
             boardFileRepository.save(boardFileEntity);
+            }
         }
     }
 
+    @Transactional
     public List<BoardDTO> finAll(){
         List<BoardEntity> boardEntityList = boardRepository.findAll();
         List<BoardDTO> boardDTOList = new ArrayList<>();
@@ -74,6 +80,7 @@ public class BoardService {
     boardRepository.updateHits(id);
     }
 
+    @Transactional
     public BoardDTO findById(Long id) {
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
         if(optionalBoardEntity.isPresent()){
